@@ -35,16 +35,20 @@ kisjakab:  KEKW
 
 ### Mi számít spamnek?
 
+Egy csak emote-ból álló üzenet akkor esik ki, ha **ugyanaz a user ugyanazt az emote-ot már elküldte az előző 10 üzenetben**. A 10-be mindenki üzenete beleszámít, a kiszűrteké is.
+
 | Üzenet | Kiszűri? |
 | --- | --- |
 | Ugyanaz a user egymás után ugyanazt az emote-ot küldi | ✅ igen (az első marad) |
+| Többen felváltva spamelik (`A: KEKW`, `B: KEKW`, `A: KEKW`…) | ✅ igen, userenként az első marad |
 | Ugyanaz az emote többször egy üzenetben (`KEKW KEKW KEKW`) | ✅ igen, ha a user előtte is KEKW-t küldött (egy sima `KEKW`-nek számít, az első ilyen üzenet változatlanul megmarad) |
+| Közben más userek írnak, de 10 üzeneten belül jön az ismétlés (legfeljebb 9 másik üzenet közte) | ✅ igen |
+| Az előző KEKW óta legalább 10 másik üzenet jött | ❌ nem, új sorként megjelenik |
+| A user közben mást ír (szöveget vagy másik emote-ot) | ❌ nem, a következő KEKW-je újra megjelenik |
 | Emote és mellette szöveg (`KEKW lol`) | ❌ nem |
 | Más emote (`LUL` a `KEKW` után) | ❌ nem |
-| Ha közben bárki bármit ír, a következő KEKW | ❌ nem, új sorként megjelenik |
-| Különböző userek ugyanazzal az emote-tal | ❌ nem, mindenkié megjelenik |
 
-A szűrés csak a **közvetlenül egymás után** érkező üzenetekre működik. Ha többen felváltva spamelik ugyanazt az emote-ot (`A: KEKW`, `B: KEKW`, `A: KEKW`…), akkor minden üzenet megjelenik, mert mindegyik megszakítja az előző sorozatát.
+A 10 üzenetes határ a `websocketFilter.js` elején, a `spamWindowSize` értékkel állítható.
 
 ## Telepítés
 
