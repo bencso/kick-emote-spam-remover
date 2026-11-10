@@ -1,8 +1,7 @@
 (() => {
   "use strict";
 
-  const spamWindowSize = 25;
-  const breakStreakOnOtherMessage = true;
+  const spamWindowSize = 10;
 
   const emoteOnlyPattern = /^\s*(?:\[emote:\d+:[^\]]+\]\s*)+$/;
   const emotePattern = /\[emote:\d+:([^\]]+)\]/g;
@@ -62,24 +61,31 @@
     return found;
   }
 
+  function forgetOldStreaks() {
+    for (const [key, position] of spamStreaks) {
+      if (messagePosition - position > spamWindowSize) spamStreaks.delete(key);
+    }
+  }
+
   function isSpamMessage({ username, content }) {
     messagePosition++;
+    forgetOldStreaks();
 
     const emoteName = getEmoteName(content);
     const streakKey = emoteName && `${username}:${emoteName}`;
 
-    if (breakStreakOnOtherMessage) {
-      for (const key of spamStreaks.keys()) {
-        if (key !== streakKey) spamStreaks.delete(key);
-      }
+    // Ha a user mást ír (szöveget vagy másik emote-ot), az ő korábbi sorozata megszakad
+    const userPrefix = `${username}:`;
+    for (const key of spamStreaks.keys()) {
+      if (key.startsWith(userPrefix) && key !== streakKey) spamStreaks.delete(key);
     }
 
     if (!emoteName) return false;
 
-    const lastPosition = spamStreaks.get(streakKey);
+    const isSpam = spamStreaks.has(streakKey);
     spamStreaks.set(streakKey, messagePosition);
 
-    return lastPosition !== undefined && messagePosition - lastPosition <= spamWindowSize;
+    return isSpam;
   }
 
   function filterFrame(rawData) {
