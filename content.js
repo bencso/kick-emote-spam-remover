@@ -2,7 +2,7 @@
   "use strict";
 
   function setSpamFilter(on) {
-    document.documentElement.dataset.spamFilter = on ? "be" : "ki";
+    document.documentElement.dataset.kickSpamFilter = on ? "be" : "ki";
   }
 
   setSpamFilter(true);
