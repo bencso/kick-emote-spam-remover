@@ -82,6 +82,7 @@ A Kick chatje egy virtualizált lista, minden üzenet egy előre kiszámolt hely
 ## Fájlok
 
 ```
+├── LICENSE
 ├── manifest.json
 ├── background.js
 ├── content.js
