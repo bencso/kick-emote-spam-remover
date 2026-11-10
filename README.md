@@ -94,6 +94,17 @@ A Kick chatje egy virtualizált lista, minden üzenet egy előre kiszámolt hely
 - **Kikapcsoláskor a kiszűrt üzenetek nem jönnek vissza.** Kikapcsolás után csak az új üzenetek érkeznek szűretlenül.
 - **A Kick bármikor megváltoztathatja a chat formátumát.** A szűrő azt feltételezi, hogy a chatüzenetekben van `content` és `sender.username` mező, és az emote-ok `[emote:ID:NÉV]` formában jönnek. Ha a Kick ezen változtat, a szűrő nem fog működni, amíg nem frissítjük.
 
-## Megjegyzés
+## Adatvédelem
 
-Ez egy nem hivatalos, harmadik féltől származó bővítmény, nincs kapcsolatban a Kickkel.
+A bővítmény kizárólag a saját böngésződben fut, és csak azt változtatja meg, mi jelenik meg **neked** a chatben.
+
+- Nem küld semmit a Kicknek, és nem hív semmilyen Kick API-t.
+- Nem gyűjt és nem továbbít adatot, külső szerverhez nem csatlakozik.
+- Más nézők chatjét és a stream működését nem befolyásolja.
+- Egyetlen tárolt adat a be/ki állapot (`chrome.storage.local`).
+
+## Felelősségkizárás
+
+Ez egy nem hivatalos, harmadik féltől származó bővítmény. Nincs kapcsolatban a Kickkel, és a Kick nem hagyta jóvá. A „Kick” név és logó a jogtulajdonosáé.
+
+A bővítményt mindenki a saját felelősségére használja. A szoftver „ahogy van” (as is) állapotban, mindenféle garancia nélkül érhető el. A használat előtt érdemes átnézni a Kick [felhasználási feltételeit](https://kick.com/terms-of-service).
