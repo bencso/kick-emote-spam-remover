@@ -12,7 +12,7 @@
 
 ## Mit csinál?
 
-Amikor valaki egymás után spameli az emote-ot (pl. tízszer egy KEKW-t), a chat tele lenne ezzel. A bővítmény ilyenkor csak az első üzenetet hagyja meg, a többit kiszűri.
+Amikor valaki spameli az emote-ot (pl. tízszer egy KEKW-t), a chat tele lenne ezzel, akkor is, ha közben mások is írnak. A bővítmény ilyenkor userenként csak az első üzenetet hagyja meg, a többit kiszűri.
 
 **Előtte:**
 
@@ -107,7 +107,7 @@ A bővítmény kizárólag a saját böngésződben fut, és csak azt változtat
 - Nem küld semmit a Kicknek, és nem hív semmilyen Kick API-t.
 - Nem gyűjt és nem továbbít adatot, külső szerverhez nem csatlakozik.
 - Más nézők chatjét és a stream működését nem befolyásolja.
-- Egyetlen tárolt adat a be/ki állapot (`chrome.storage.local`). A spam felismeréséhez az utolsó üzenet küldőjét és emote-ját csak a memóriában tartja, ez az oldal bezárásakor törlődik.
+- Egyetlen tárolt adat a be/ki állapot (`chrome.storage.local`). A spam felismeréséhez az utolsó 10 üzenet küldőit és emote-jait csak a memóriában tartja, a régebbieket folyamatosan törli, az oldal bezárásakor pedig minden törlődik.
 
 ## Felelősségkizárás
 
