@@ -38,11 +38,13 @@ kisjakab:  KEKW
 | Üzenet | Kiszűri? |
 | --- | --- |
 | Ugyanaz a user egymás után ugyanazt az emote-ot küldi | ✅ igen (az első marad) |
-| Ugyanaz az emote többször egy üzenetben (`KEKW KEKW KEKW`) | ✅ igen |
+| Ugyanaz az emote többször egy üzenetben (`KEKW KEKW KEKW`) | ✅ igen, ha a user előtte is KEKW-t küldött (egy sima `KEKW`-nek számít, az első ilyen üzenet változatlanul megmarad) |
 | Emote és mellette szöveg (`KEKW lol`) | ❌ nem |
 | Más emote (`LUL` a `KEKW` után) | ❌ nem |
-| Ha közben más is ír, a következő KEKW | ❌ nem, új sorként megjelenik |
-| Különböző userek ugyanazzal az emote-tal | ❌ nem, userenként egy marad |
+| Ha közben bárki bármit ír, a következő KEKW | ❌ nem, új sorként megjelenik |
+| Különböző userek ugyanazzal az emote-tal | ❌ nem, mindenkié megjelenik |
+
+A szűrés csak a **közvetlenül egymás után** érkező üzenetekre működik. Ha többen felváltva spamelik ugyanazt az emote-ot (`A: KEKW`, `B: KEKW`, `A: KEKW`…), akkor minden üzenet megjelenik, mert mindegyik megszakítja az előző sorozatát.
 
 ## Telepítés
 
@@ -67,9 +69,9 @@ A változás azonnal érvényes, nem kell újratölteni az oldalt.
 
 ## Hogyan működik?
 
-A Kick chatje egy virtualizált lista, minden üzenet egy előre kiszámolt helyen jelenik meg. Ezért a bővítmény nem a már megjelent üzeneteket rejti el, hanem websocket szintjén szűr, még mielőtt a Kicktől megkapná az üzenetet a kliens.
+A Kick chatje egy virtualizált lista, minden üzenet egy előre kiszámolt helyen jelenik meg. Ezért a bővítmény nem a már megjelent üzeneteket rejti el, hanem websocket szintjén szűr: a spam üzenetet még azelőtt kiveszi, hogy a Kick oldalának kódja feldolgozná, így az be sem kerül a listába.
 
-- **`websocketFilter.js`**: a Kick oldalán fut (`MAIN` world), még az oldal saját kódja előtt. Becsomagolja a `WebSocket` `onmessage` és `addEventListener` metódusát. Minden bejövő üzenetben megkeresi a chatüzeneteket (`content` + `sender.username`), és ha spamet talál, azt kiveszi az üzenetből. Ha egy üzenetben több chatüzenet érkezik, csak a spam sorokat veszi ki, a többit továbbengedi.
+- **`websocketFilter.js`**: a Kick oldalán fut (`MAIN` world), még az oldal saját kódja előtt. Becsomagolja a `WebSocket` `onmessage` és `addEventListener` metódusát. Minden bejövő üzenetben megkeresi a chatüzeneteket (`content` + `sender.username`), és ha spamet talál, azt kiveszi az üzenetből. Ha egy websocket-keret több sorban több chatüzenetet tartalmaz, soronként dönt: csak a spam sorokat veszi ki, a többit továbbengedi.
 - **`content.js`**: a bővítmény be/ki állapotát adja át a `websocketFilter.js`-nek
 - **`background.js`**: az ikonra kattintást kezeli, és frissíti a BE/KI jelvényt.
 
@@ -101,10 +103,10 @@ A bővítmény kizárólag a saját böngésződben fut, és csak azt változtat
 - Nem küld semmit a Kicknek, és nem hív semmilyen Kick API-t.
 - Nem gyűjt és nem továbbít adatot, külső szerverhez nem csatlakozik.
 - Más nézők chatjét és a stream működését nem befolyásolja.
-- Egyetlen tárolt adat a be/ki állapot (`chrome.storage.local`).
+- Egyetlen tárolt adat a be/ki állapot (`chrome.storage.local`). A spam felismeréséhez az utolsó üzenet küldőjét és emote-ját csak a memóriában tartja, ez az oldal bezárásakor törlődik.
 
 ## Felelősségkizárás
 
-Ez egy nem hivatalos, harmadik féltől származó bővítmény. Nincs kapcsolatban a Kickkel, és a Kick nem hagyta jóvá. A „Kick” név és logó a jogtulajdonosáé.
+Ez egy nem hivatalos, harmadik féltől származó bővítmény. Nincs kapcsolatban a Kickkel, és a Kick nem hagyta jóvá. A „Kick” név és védjegy a jogtulajdonosáé.
 
 A bővítményt mindenki a saját felelősségére használja. A szoftver „ahogy van” (as is) állapotban, mindenféle garancia nélkül érhető el. A használat előtt érdemes átnézni a Kick [felhasználási feltételeit](https://kick.com/terms-of-service).
