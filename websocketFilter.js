@@ -6,6 +6,8 @@
   const emoteOnlyPattern = /^\s*(?:\[emote:\d+:[^\]]+\]\s*)+$/;
   const emotePattern = /\[emote:\d+:([^\]]+)\]/g;
 
+  const xdStreakKey = "${username}:__xd__";
+
   const spamStreaks = new Map();
   const filteredEventCache = new WeakMap();
   const wrappedListeners = new WeakMap();
@@ -15,6 +17,12 @@
 
   function isFilterEnabled() {
     return document.documentElement.dataset.kickSpamFilter !== "off";
+  }
+
+  function isXdSpam(content) {
+    const xdCount = (content.match(/[xd]/gi) || []).length;
+    const letterCount = (content.match(/\p{L}/gu) || []).length;
+    return letterCount >= 2 && xdCount / letterCount > 0.8;
   }
 
   function getEmoteName(content) {
@@ -71,10 +79,17 @@
     messagePosition++;
     forgetOldStreaks();
 
+ 
+    if (!emoteOnlyPattern.test(content) && isXdSpam(content)) {
+      const isSpam = spamStreaks.has(xdStreakKey);
+      spamStreaks.set(xdStreakKey, messagePosition);
+      return isSpam;
+    }
+
     const emoteName = getEmoteName(content);
     const streakKey = emoteName && `${username}:${emoteName}`;
 
-    // Ha a user mást ír (szöveget vagy másik emote-ot), az ő korábbi sorozata megszakad
+    
     const userPrefix = `${username}:`;
     for (const key of spamStreaks.keys()) {
       if (key.startsWith(userPrefix) && key !== streakKey) spamStreaks.delete(key);
@@ -131,7 +146,6 @@
         origin: event.origin,
         lastEventId: event.lastEventId,
       });
-
 
     filteredEventCache.set(event, result);
     return result;
